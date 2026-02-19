@@ -3,136 +3,137 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Smart Spend Analyzer</title>
+    <title>Login | Smart Spend Analyzer</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="./css/styles.css" />
+    <style>
+      :root {
+        --card-border: #e9edf4;
+      }
+      body {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f7f8fd 0%, #ecf1ff 100%);
+      }
+      .login-card {
+        border: 1px solid var(--card-border);
+        border-radius: 18px;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      }
+      .brand-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #2563eb;
+        display: inline-block;
+      }
+    </style>
   </head>
   <body>
-    <div class="app-shell">
-      <div class="container py-5">
-        <header class="mb-4">
-          <div class="d-flex flex-wrap gap-3 justify-content-between align-items-end">
-            <div>
-              <h1 class="display-6 fw-semibold mb-1">Smart Spend Analyzer</h1>
-              <p class="text-secondary mb-0">
-                Upload transactions, detect anomalies, and get simple financial insights.
-              </p>
-            </div>
-            <span class="badge text-bg-light border p-2" id="dataSourceBadge">Source: Mock data</span>
+    <main class="container py-5 d-flex align-items-center justify-content-center">
+      <div class="card login-card w-100" style="max-width: 460px;">
+        <div class="card-body p-4 p-lg-5">
+          <div class="text-center mb-4">
+            <p class="mb-2 small text-secondary">
+              <span class="brand-dot me-2"></span>Smart Spend Analyzer
+            </p>
+            <h1 class="h3 mb-1">Welcome back</h1>
+            <p class="text-secondary mb-0">Login to continue</p>
           </div>
-        </header>
 
-        <section class="card soft-card mb-4">
-          <div class="card-body">
-            <div class="row g-3 align-items-end">
-              <div class="col-lg-6">
-                <label for="csvInput" class="form-label fw-medium">Upload CSV</label>
-                <input class="form-control" type="file" id="csvInput" accept=".csv" />
-                <div class="form-text">
-                  Expected columns: <code>date</code>, <code>description</code>, <code>amount</code>.
-                </div>
-              </div>
-              <div class="col-lg-6 d-flex flex-wrap gap-2 justify-content-lg-end">
-                <button class="btn btn-primary" id="useMockBtn" type="button">Use Mock Data</button>
-                <button class="btn btn-outline-secondary" id="clearEditsBtn" type="button">Clear Manual Edits</button>
-              </div>
+          <form id="loginForm" novalidate>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input id="email" name="email" class="form-control" type="email" required />
+              <div class="invalid-feedback">Enter a valid email address.</div>
             </div>
-            <hr class="my-4" />
-            <div class="row g-3 align-items-end">
-              <div class="col-lg-4">
-                <label for="openaiKey" class="form-label fw-medium">OpenAI API Key</label>
-                <input
-                  class="form-control"
-                  type="password"
-                  id="openaiKey"
-                  autocomplete="off"
-                  placeholder="sk-..."
-                />
-              </div>
-              <div class="col-lg-3">
-                <label for="openaiModel" class="form-label fw-medium">Model</label>
-                <input class="form-control" type="text" id="openaiModel" value="gpt-4.1-mini" />
-              </div>
-              <div class="col-lg-5 d-flex flex-wrap gap-2 justify-content-lg-end">
-                <button class="btn btn-outline-primary" id="aiEnhanceBtn" type="button">Enhance with AI</button>
-              </div>
-            </div>
-            <div class="form-text mt-2">
-              BYOK mode: key is used from this page session only and is not stored by the app.
-            </div>
-            <div id="uploadMessage" class="small mt-3 text-secondary"></div>
-            <div id="aiMessage" class="small mt-2 text-secondary"></div>
-          </div>
-        </section>
 
-        <section class="row g-4 mb-4">
-          <div class="col-xl-8">
-            <div class="card soft-card h-100">
-              <div class="card-header bg-transparent border-0 pt-4 pb-0">
-                <h2 class="h5 mb-0">Insights</h2>
-              </div>
-              <div class="card-body pt-3" id="insightsPanel"></div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input id="password" name="password" class="form-control" type="password" required minlength="8" />
+              <div class="invalid-feedback">Enter your password.</div>
             </div>
-          </div>
-          <div class="col-xl-4">
-            <div class="card soft-card h-100">
-              <div class="card-header bg-transparent border-0 pt-4 pb-0">
-                <h2 class="h5 mb-0">Anomaly Alerts</h2>
-              </div>
-              <div class="card-body pt-3" id="alertsPanel"></div>
-            </div>
-          </div>
-        </section>
 
-        <section class="row g-4 mb-4">
-          <div class="col-lg-6">
-            <div class="card soft-card h-100">
-              <div class="card-header bg-transparent border-0 pt-4 pb-0">
-                <h2 class="h5 mb-0">Category Spend Mix</h2>
-              </div>
-              <div class="card-body">
-                <div class="chart-wrap">
-                  <canvas id="categoryChart"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="card soft-card h-100">
-              <div class="card-header bg-transparent border-0 pt-4 pb-0">
-                <h2 class="h5 mb-0">Monthly Trend</h2>
-              </div>
-              <div class="card-body">
-                <div class="chart-wrap">
-                  <canvas id="trendChart"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+            <button class="btn btn-primary w-100 mt-2" type="submit">Login</button>
+          </form>
 
-        <section class="card soft-card">
-          <div class="card-header bg-transparent border-0 pt-4 pb-0 d-flex justify-content-between">
-            <h2 class="h5 mb-0">Transactions</h2>
-            <span class="small text-secondary" id="transactionCount"></span>
+          <div id="status" class="small mt-3 text-secondary"></div>
+
+          <div class="text-center mt-3">
+            <p class="small mb-1">
+              New user?
+              <a class="text-decoration-none" href="./signup.html">Create an account</a>
+            </p>
+            <a class="small text-decoration-none" href="./dashboard.html">Continue to dashboard</a>
           </div>
-          <div class="card-body" id="tableContainer"></div>
-        </section>
+        </div>
       </div>
-    </div>
+    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
-    <script type="module" src="./js/app.js"></script>
+    <script>
+      const activeSessionRaw = localStorage.getItem("smartSpendSession");
+      if (activeSessionRaw) {
+        window.location.href = "./dashboard.html";
+      }
+
+      const form = document.getElementById("loginForm");
+      const status = document.getElementById("status");
+
+      function setStatus(message, isError = false) {
+        status.textContent = message;
+        status.className = `small mt-3 ${isError ? "text-danger" : "text-success"}`;
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        form.classList.add("was-validated");
+
+        if (!form.checkValidity()) {
+          setStatus("Please enter valid credentials.", true);
+          return;
+        }
+
+        const email = document.getElementById("email").value.trim().toLowerCase();
+        const password = document.getElementById("password").value;
+        const authRaw = localStorage.getItem("smartSpendAuth");
+        const userRaw = localStorage.getItem("smartSpendUser");
+
+        if (!authRaw || !userRaw) {
+          setStatus("No account found. Please sign up first.", true);
+          return;
+        }
+
+        let auth = null;
+        let user = null;
+        try {
+          auth = JSON.parse(authRaw);
+          user = JSON.parse(userRaw);
+        } catch (_) {
+          setStatus("Stored account data is invalid. Please sign up again.", true);
+          return;
+        }
+
+        if (email !== String(auth.email || "").toLowerCase() || password !== String(auth.password || "")) {
+          setStatus("Incorrect email or password.", true);
+          return;
+        }
+
+        localStorage.setItem(
+          "smartSpendSession",
+          JSON.stringify({
+            email: user.email,
+            name: user.name,
+            loggedInAt: new Date().toISOString()
+          })
+        );
+        setStatus("Login successful. Redirecting...");
+        setTimeout(() => {
+          window.location.href = "./dashboard.html";
+        }, 700);
+      });
+    </script>
   </body>
 </html>
